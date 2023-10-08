@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -80,6 +81,7 @@ class MainActivity : ComponentActivity() {
 //            }
             ImageAtPosition()
 //            DragTest()
+            ArrowAndObject()
         }
     }
 }
@@ -102,8 +104,6 @@ fun ImageAtPosition() {
     val screenWidth = configuration.screenWidthDp
     val screenHeight = configuration.screenHeightDp
 
-    val density = LocalDensity.current.density // ピクセル密度を取得
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -125,6 +125,63 @@ fun ImageAtPosition() {
             Text(text = "${positionState.x.roundToInt()}, ${positionState.y.roundToInt()}")
             Text(text = "$screenWidth, $screenHeight")
         }
+    }
+}
+
+@Composable
+fun ArrowAndObject() {
+    var objectPosition by remember { mutableStateOf(0f) }
+    var pressing by remember { mutableStateOf(0) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        // 左矢印
+        Image(
+            painter = painterResource(id = R.drawable.left_arrow),
+            contentDescription = null,
+            modifier = Modifier
+                .size(48.dp)
+                .align(Alignment.CenterStart)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            objectPosition -= 10f
+                        },
+//                        onPress = {
+//                            pressing = 1
+//                            awaitRelease()
+//                            pressing = 0
+//                        }
+                    )
+                }
+        )
+
+        // 右矢印
+        Image(
+            painter = painterResource(id = R.drawable.right_arrow),
+            contentDescription = null,
+            modifier = Modifier
+                .size(48.dp)
+                .align(Alignment.CenterEnd)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = {
+                            objectPosition += 10f
+                        }
+                    )
+                }
+        )
+
+        // 移動する物体
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .offset(x = objectPosition.dp, y = 0.dp)
+                .background(Color.Red)
+        )
     }
 }
 
